@@ -1,0 +1,8 @@
+mlx>=0.31.0
+mlx-metal>=0.31.0
+numpy>=2.0
+ml_dtypes
+safetensors
+tokenizers
+gguf
+torch          # ref_torch: reference rope for the compressor ring

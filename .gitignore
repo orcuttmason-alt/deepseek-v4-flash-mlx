@@ -1,0 +1,13 @@
+mlx-ckpt/
+gguf/
+*.safetensors
+*.gguf
+*.bin
+__pycache__/
+*.pyc
+.venv/
+venv/
+dumps/*.npz
+dumps/*.npy
+
+dumps/hot_gids.json
