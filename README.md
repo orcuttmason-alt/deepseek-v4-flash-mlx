@@ -64,6 +64,19 @@ Knobs (env vars): `CAP=1664` (expert-cache size), `MAX_CTX=32768` (context windo
 quality trade). DeepSeek V4-Flash is Chinese-trained; the daemon injects an "always respond in English"
 system prompt by default.
 
+## With 64 GB+ of RAM
+
+The bottleneck here is how much of the model stays resident, so more unified memory translates fairly
+directly into speed:
+
+- **Raise the expert cache (`CAP`).** Every extra GB lets more of the 256 experts stay resident instead
+  of streaming from SSD, so the cache-hit rate climbs and fewer bytes move per token. On 48 GB the
+  default is `CAP=1664` (~31 GB active); with 64 GB you can push it well higher (try `CAP=2400`+) before
+  you approach swap. Tune against **free RAM**, not the macOS swap counter (it reads high spuriously).
+- **Speculative decoding.** The engine was built for a lossless draft/verify path (proven bit-exact in
+  the research tree, not bundled here) that is memory-walled at 48 GB — verification needs the draft's
+  and target's active experts resident *at once*. At ~64 GB that union fits, projecting **~6–7.5 tok/s**.
+
 ## How it works
 
 - **Expert offloading** (`offload_cache_v4.py`, `pread_loader.py`): a fixed-size device LRU over mxfp4
